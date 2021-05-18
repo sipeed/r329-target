@@ -52,25 +52,26 @@ async def keys_events(packet, device):
             packet["selected"] = event.code
         else:
             pass
-            
+
 for device in [keys]:
     asyncio.ensure_future(keys_events(packet, device))
 
 async def main(packet):
     if packet["selected"] == 114:
         print('test_camera_lcd')
-        os.system('mjpg_streamer -i "input_uvc.so -d /dev/video0 -r 320x240" -o "output_file.so -m test.jpg" &')
-        await asyncio.sleep(0.3)
-        os.system('fbviewer /tmp/test.jpg &')
-        os.system('killall mjpg_streamer &')
-        await asyncio.sleep(0.3)
+        os.system('camerademo YUYV 320 240 30 bmp /tmp 60')
+        # await asyncio.sleep(0.1)
+        # os.system('fbviewer tmp/bmp_YUYV_1.bmp &')
+        await asyncio.sleep(0.2)
     elif packet["selected"] == 115:
         print('test_record_play')
         canvas = Image.new("RGB", (240, 240), "#00FFFF")
         draw = ImageDraw.Draw(canvas)
-        draw.text((40, 120), 'Music Test', fill=(255, 0, 0))
+        draw.text((40, 120), 'Music reco Test', fill=(255, 0, 0))
         canvas.show()
-        os.system('arecord -d 2 -t wav -r 44100 -f S32_LE > /tmp/test.wav')
+        os.system('arecord -d 3 -t wav -r 44100 -f S32_LE > /tmp/test.wav')
+        draw.text((40, 120), 'Music reco Test play', fill=(255, 0, 0))
+        canvas.show()
         os.system('aplay /tmp/test.wav')
         await asyncio.sleep(0.1)
     elif packet["selected"] == 248:
