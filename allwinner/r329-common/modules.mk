@@ -62,3 +62,17 @@ define KernelPackage/net-xrbtlpm/description
 endef
 
 $(eval $(call KernelPackage,net-xrbtlpm))
+
+define KernelPackage/net-bl-fdrv
+  SUBMENU:=$(WIRELESS_MENU)
+  TITLE:=BoufalloLab Wi-Fi support
+  DEPENDS:= +@IPV6
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/bl602_sdio_driver/BL602_HostDriver/fullmac/bl_fdrv.ko
+  AUTOLOAD:=$(call AutoProbe,bl_fdrv)
+endef
+
+define KernelPackage/net-bl-fdrv/description
+ Kernel modules for BoufalloLab BL602 support
+endef
+
+$(eval $(call KernelPackage,net-bl-fdrv))
