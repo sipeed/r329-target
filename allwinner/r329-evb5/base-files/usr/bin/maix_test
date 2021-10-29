@@ -1,3 +1,119 @@
+# #!/usr/bin/env python3
+
+# from PIL import Image, ImageFont, ImageDraw
+# from evdev import InputDevice
+# import asyncio, time, os, socket
+
+# try:
+#   import shutil
+#   from PIL import ImageShow
+#   # use fbviewer on linux
+#   # os.system('ln -s /usr/sbin/fbviewer /usr/sbin/display')
+#   if shutil.which("fbviewer"):
+#     class fbViewer(ImageShow.UnixViewer):
+#       def get_command_ex(self, file, **options):
+#         command = executable = "fbviewer"
+#         return command, executable
+#     ImageShow.register(fbViewer, 0)
+# except ModuleNotFoundError as e:
+#   pass
+
+# import os
+# def shell(cmd):
+#     import os
+#     textlist = os.popen(cmd).readlines()
+#     for line in textlist:
+#         print(line)
+#     return textlist
+
+# def get_host_ip():
+#     try:
+#         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+#         s.connect(('8.8.8.8', 80))
+#         ip = "IP: " + s.getsockname()[0]
+#     except Exception as e:
+#         ip = "IP does not exist"
+#     finally:
+#         s.close()
+#     return ip
+
+# packet = {
+#     'selected': 114
+# }
+
+# asyncio.set_event_loop(asyncio.new_event_loop())
+
+# keys = InputDevice('/dev/input/event0')
+
+# async def keys_events(packet, device):
+#     async for event in device.async_read_loop():
+#         # await asyncio.sleep(0.02)
+#         if event.value == 1:
+#             packet["selected"] = event.code
+#         else:
+#             pass
+
+# for device in [keys]:
+#     asyncio.ensure_future(keys_events(packet, device))
+
+# async def main(packet):
+#     if packet["selected"] == 114:
+#         print('test_camera_lcd')
+#         os.system('camerademo YUYV 320 240 30 bmp /tmp 60')
+#         # await asyncio.sleep(0.1)
+#         # os.system('fbviewer tmp/bmp_YUYV_1.bmp &')
+#         await asyncio.sleep(0.2)
+#     elif packet["selected"] == 115:
+#         print('test_record_play')
+#         canvas = Image.new("RGB", (240, 240), "#00FFFF")
+#         draw = ImageDraw.Draw(canvas)
+#         draw.text((40, 120), 'Music reco Test', fill=(255, 0, 0))
+#         canvas.show()
+#         os.system('arecord -d 3 -t wav -r 44100 -f S32_LE > /tmp/test.wav')
+#         draw.text((40, 120), 'Music reco Test play', fill=(255, 0, 0))
+#         canvas.show()
+#         os.system('aplay /tmp/test.wav')
+#         await asyncio.sleep(0.1)
+#     elif packet["selected"] == 248:
+#         print('test_wifi_scan')
+#         canvas = Image.new("RGB", (240, 240), "#FFFF00")
+#         draw = ImageDraw.Draw(canvas)
+#         tmp = shell("wifi_scan_results_test")
+#         sets = []
+#         for i in tmp:
+#             if '\t' in i:
+#                 t = i.split('\t')
+#                 print(t[0], t[2])
+#                 sets.append('[{0}]({1})'.format(t[0], t[2]))
+
+#         for t in range(len(sets)):
+#             draw.text((40, 20 * t + 10), sets[t], fill=(0, 0, 255))
+
+#         canvas.show()
+#         await asyncio.sleep(0.1)
+#     elif packet["selected"] == 164:
+#         print('test_led_blink')
+#         canvas = Image.new("RGB", (240, 240), "#FFFFFF")
+#         draw = ImageDraw.Draw(canvas)
+#         draw.text((40, 120), 'LED Test', fill=(255, 0, 0))
+#         canvas.show()
+#         os.system('ledstester.sh')
+#         await asyncio.sleep(0.1)
+#     else:
+#         pass
+#     # await asyncio.sleep(0.5)
+#     # await asyncio.sleep(0.05)
+#     asyncio.ensure_future(main(packet))
+
+# asyncio.ensure_future(main(packet))
+
+# loop = asyncio.get_event_loop()
+# loop.run_forever()
+
+# # arecord -d 2 -t wav -r 44100 -f S32_LE > /1.wav
+# # aplay 1.wav
+
+# # TR 317 TL 160 DR 614 DL 474
 #!/usr/bin/env python3
 
 from PIL import Image, ImageFont, ImageDraw
@@ -56,56 +172,101 @@ async def keys_events(packet, device):
 for device in [keys]:
     asyncio.ensure_future(keys_events(packet, device))
 
-async def main(packet):
-    if packet["selected"] == 114:
-        print('test_camera_lcd')
-        os.system('camerademo YUYV 320 240 30 bmp /tmp 60')
-        # await asyncio.sleep(0.1)
-        # os.system('fbviewer tmp/bmp_YUYV_1.bmp &')
-        await asyncio.sleep(0.2)
-    elif packet["selected"] == 115:
-        print('test_record_play')
-        canvas = Image.new("RGB", (240, 240), "#00FFFF")
-        draw = ImageDraw.Draw(canvas)
-        draw.text((40, 120), 'Music reco Test', fill=(255, 0, 0))
-        canvas.show()
-        os.system('arecord -d 3 -t wav -r 44100 -f S32_LE > /tmp/test.wav')
-        draw.text((40, 120), 'Music reco Test play', fill=(255, 0, 0))
-        canvas.show()
-        os.system('aplay /tmp/test.wav')
-        await asyncio.sleep(0.1)
-    elif packet["selected"] == 248:
-        print('test_wifi_scan')
-        canvas = Image.new("RGB", (240, 240), "#FFFF00")
-        draw = ImageDraw.Draw(canvas)
-        tmp = shell("wifi_scan_results_test")
-        sets = []
-        for i in tmp:
-            if '\t' in i:
-                t = i.split('\t')
-                print(t[0], t[2])
-                sets.append('[{0}]({1})'.format(t[0], t[2]))
 
-        for t in range(len(sets)):
-            draw.text((40, 20 * t + 10), sets[t], fill=(0, 0, 255))
+import _thread, time
 
-        canvas.show()
-        await asyncio.sleep(0.1)
-    elif packet["selected"] == 164:
-        print('test_led_blink')
-        canvas = Image.new("RGB", (240, 240), "#FFFFFF")
-        draw = ImageDraw.Draw(canvas)
-        draw.text((40, 120), 'LED Test', fill=(255, 0, 0))
-        canvas.show()
-        os.system('ledstester.sh')
-        await asyncio.sleep(0.1)
-    else:
-        pass
-    # await asyncio.sleep(0.5)
-    # await asyncio.sleep(0.05)
-    asyncio.ensure_future(main(packet))
+def loop_task(packet):
+    while True:
+        time.sleep(0.5)
+        if packet["selected"] == 114:
+            print('test_camera_lcd')
+            os.system('camerademo YUYV 320 240 30 bmp /tmp 60')
+            # await asyncio.sleep(0.1)
+            # os.system('fbviewer tmp/bmp_YUYV_1.bmp &')
+        elif packet["selected"] == 115:
+            print('test_record_play')
+            canvas = Image.new("RGB", (240, 240), "#00FFFF")
+            draw = ImageDraw.Draw(canvas)
+            draw.text((40, 120), 'Music reco Test', fill=(255, 0, 0))
+            canvas.show()
+            os.system('arecord -d 3 -t wav -r 44100 -f S32_LE > /tmp/test.wav')
+            draw.text((40, 120), 'Music reco Test play', fill=(255, 0, 0))
+            canvas.show()
+            os.system('aplay /tmp/test.wav')
+        elif packet["selected"] == 248:
+            print('test_wifi_scan')
+            canvas = Image.new("RGB", (240, 240), "#FFFF00")
+            draw = ImageDraw.Draw(canvas)
+            tmp = shell("wifi_scan_results_test")
+            sets = []
+            for i in tmp:
+                if '\t' in i:
+                    t = i.split('\t')
+                    print(t[0], t[2])
+                    sets.append('[{0}]({1})'.format(t[0], t[2]))
+            for t in range(len(sets)):
+                draw.text((40, 20 * t + 10), sets[t], fill=(0, 0, 255))
+            canvas.show()
+        elif packet["selected"] == 164:
+            print('test_led_blink')
+            canvas = Image.new("RGB", (240, 240), "#FFFFFF")
+            draw = ImageDraw.Draw(canvas)
+            draw.text((40, 120), 'LED Test', fill=(255, 0, 0))
+            canvas.show()
+            os.system('ledstester.sh')
 
-asyncio.ensure_future(main(packet))
+_thread.start_new_thread(loop_task, (packet, ) )
+
+# async def main(packet):
+#     if packet["selected"] == 114:
+#         print('test_camera_lcd')
+#         os.system('camerademo YUYV 320 240 30 bmp /tmp 60')
+#         # await asyncio.sleep(0.1)
+#         # os.system('fbviewer tmp/bmp_YUYV_1.bmp &')
+#         await asyncio.sleep(0.2)
+#     elif packet["selected"] == 115:
+#         print('test_record_play')
+#         canvas = Image.new("RGB", (240, 240), "#00FFFF")
+#         draw = ImageDraw.Draw(canvas)
+#         draw.text((40, 120), 'Music reco Test', fill=(255, 0, 0))
+#         canvas.show()
+#         os.system('arecord -d 3 -t wav -r 44100 -f S32_LE > /tmp/test.wav')
+#         draw.text((40, 120), 'Music reco Test play', fill=(255, 0, 0))
+#         canvas.show()
+#         os.system('aplay /tmp/test.wav')
+#         await asyncio.sleep(0.1)
+#     elif packet["selected"] == 248:
+#         print('test_wifi_scan')
+#         canvas = Image.new("RGB", (240, 240), "#FFFF00")
+#         draw = ImageDraw.Draw(canvas)
+#         tmp = shell("wifi_scan_results_test")
+#         sets = []
+#         for i in tmp:
+#             if '\t' in i:
+#                 t = i.split('\t')
+#                 print(t[0], t[2])
+#                 sets.append('[{0}]({1})'.format(t[0], t[2]))
+
+#         for t in range(len(sets)):
+#             draw.text((40, 20 * t + 10), sets[t], fill=(0, 0, 255))
+
+#         canvas.show()
+#         await asyncio.sleep(0.1)
+#     elif packet["selected"] == 164:
+#         print('test_led_blink')
+#         canvas = Image.new("RGB", (240, 240), "#FFFFFF")
+#         draw = ImageDraw.Draw(canvas)
+#         draw.text((40, 120), 'LED Test', fill=(255, 0, 0))
+#         canvas.show()
+#         os.system('ledstester.sh')
+#         await asyncio.sleep(0.1)
+#     else:
+#         pass
+#     # await asyncio.sleep(0.5)
+#     # await asyncio.sleep(0.05)
+#     asyncio.ensure_future(main(packet))
+
+# asyncio.ensure_future(main(packet))
 
 loop = asyncio.get_event_loop()
 loop.run_forever()
